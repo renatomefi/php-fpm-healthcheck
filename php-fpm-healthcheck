@@ -103,17 +103,13 @@ check_fpm_health() {
     done
 }
 
-set +e
-
-GETOPT=$(getopt -o v --long verbose,accepted-conn:,listen-queue-len:,active-processes:,slow-requests: -n 'php-fpm-healthcheck' -- "$@")
-
-if test "$?" != 0; then >&2 echo "Invalid options, terminating." ; exit 3 ; fi
-
-set -e
-
-FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
+if ! GETOPT=$(getopt -o v --long verbose,accepted-conn:,listen-queue-len:,active-processes:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
+    >&2 echo "Invalid options, terminating." ; exit 3
+fi;
 
 eval set -- "$GETOPT"
+
+FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
 
 VERBOSE=0
 
