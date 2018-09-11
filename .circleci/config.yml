@@ -1,0 +1,53 @@
+version: 2
+
+default_workflow_jobs: &default_workflow_jobs
+  - lint
+  - test-latest:
+      requires:
+        - lint
+  - test-7.1:
+      requires:
+        - lint
+  - test-7.2:
+      requires:
+        - lint
+  - test-7.3:
+      requires:
+        - lint
+        
+workflows:
+  version: 2
+  lint-test:
+    jobs: *default_workflow_jobs
+
+jobs:
+  lint:
+    machine: true
+    steps:
+      - checkout
+      - run: make lint
+  test-latest:
+    machine: true
+    steps:
+      - checkout
+      - run: make test-image IMAGE="php:fpm-alpine"
+
+  test-7.1:
+    machine: true
+    steps:
+      - checkout
+      - run: make test-image IMAGE="php:7.1-fpm-alpine3.7"
+      - run: make test-image IMAGE="php:7.1-fpm-alpine3.8"
+
+  test-7.2:
+    machine: true
+    steps:
+      - checkout
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.7"
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.8"
+
+  test-7.3:
+    machine: true
+    steps:
+      - checkout
+      - run: make test-image IMAGE="php:7.3-rc-fpm-alpine3.8"
