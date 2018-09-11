@@ -99,6 +99,42 @@ $ echo $?
 0
 ```
 
+## Kubernetes example
+
+More and more people are looking for health checks on kubernetes for php-fpm, here is an example of livenessProbe and readinessProbe:
+
+### livenessProbe
+
+```yaml
+# PodSpec: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podspec-v1-core
+    spec:
+        containers:
+        - name: "php-fpm"
+        livenessProbe:
+            exec:
+                command:
+                    - php-fpm-healthcheck
+                    - --listen-queue-len=10 # fails if there are more than 10 processes waiting in the fpm queue
+                    - --accepted-conn=5000 # fails after fpm has served more than 5k requests, this will force the pod to reset, use with caution
+            initialDelaySeconds: 0
+            periodSeconds: 10
+```
+
+### readinessProbe
+
+```yaml
+# PodSpec: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podspec-v1-core
+    spec:
+        containers:
+        - name: "php-fpm"
+        readinessProbe:
+            exec:
+                command:
+                    - php-fpm-healthcheck # a simple ping since this means it's ready to handle traffic
+            initialDelaySeconds: 1
+            periodSeconds: 5
+```
+
 ## Why POSIX sh
 
 Most of the containers contain limited software installed, using POSIX sh aims to be compatible with most of the OS images around.
