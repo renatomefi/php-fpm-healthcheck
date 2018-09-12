@@ -4,7 +4,36 @@ With the ascension of containerized applications it becomes more and more useful
 
 This POSIX compliant sh script gets php-fpm status page using `cgi-fcgi` tool, parses it's outcome and allows you to choose a metric which you want to check one, a ping mode is also available which only makes sure php-fpm is answering.
 
+- [Installation](#installation)
+- [Usage](#usage)
+- [Kubernetes example](#kubernetes-example)
+- [Why POSIX sh?](#why-posix-sh)
+- [Author and License](#author)
+
 ## Installation
+
+### Enable php-fpm status page
+
+On you php-fpm pool configuration add: `pm.status_path = /status`
+
+For instance on the official php image you can alter the file `/usr/local/etc/php-fpm.d/zz-docker.conf`
+
+[See a simple example](https://github.com/renatomefi/php-fpm-healthcheck/blob/master/test/Dockerfile#L7)
+
+[More about PHP fpm pool configuration](http://php.net/manual/en/install.fpm.configuration.php)
+
+### Requirements
+
+The script is POSIX sh but also uses some tools from your operating system, being:
+
+- cgi-fcgi
+- sed
+- tail
+- grep
+
+In case you're using alpine you only need to make sure you have installed `busybox` and `fcgi` packages.
+
+[See a simple Dockerfile based on the official PHP image](https://github.com/renatomefi/php-fpm-healthcheck/blob/master/test/Dockerfile)
 
 ### Download
 
@@ -142,3 +171,5 @@ Most of the containers contain limited software installed, using POSIX sh aims t
 ## Author
 
 Made with love by [Renato Mefi](https://github.com/renatomefi)
+
+Distributed under [MIT License](LICENSE)
