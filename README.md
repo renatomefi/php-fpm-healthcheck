@@ -4,6 +4,12 @@ With the ascension of containerized applications it becomes more and more useful
 
 This POSIX compliant sh script gets php-fpm status page using `cgi-fcgi` tool, parses it's outcome and allows you to choose a metric which you want to check one, a ping mode is also available which only makes sure php-fpm is answering.
 
+- [Installation](#installation)
+- [Usage](#usage)
+- [Kubernetes example](#kubernetes-example)
+- [Why POSIX sh?](#why-posix-sh)
+- [Author and License](#author)
+
 ## Installation
 
 ### Enable php-fpm status page
@@ -165,3 +171,5 @@ Most of the containers contain limited software installed, using POSIX sh aims t
 ## Author
 
 Made with love by [Renato Mefi](https://github.com/renatomefi)
+
+Distributed under [MIT License](LICENSE)
