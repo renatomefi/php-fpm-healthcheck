@@ -4,11 +4,23 @@ With the ascension of containerized applications it becomes more and more useful
 
 This POSIX compliant sh script gets php-fpm status page using `cgi-fcgi` tool, parses it's outcome and allows you to choose a metric which you want to check one, a ping mode is also available which only makes sure php-fpm is answering.
 
+- [Motivation](#motivation)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Kubernetes example](#kubernetes-example)
 - [Why POSIX sh?](#why-posix-sh)
 - [Author and License](#author)
+
+## Motivation
+
+Previously at work we had Docker containers containing both `php-fpm` and `Nginx` processes, while they were managed by another process being [Supervisord](http://supervisord.org/) or [s6 overlay](https://github.com/just-containers/s6-overlay) for instance.
+One good example is [this image from Ric Harvey](https://gitlab.com/ric_harvey/nginx-php-fpm)
+
+It works really well, but I wanted to achieve a few other things like using the official images and its release cycle, logs belonging to their own processes, not mixed, I didn't like to rely on Supervisord since I had bad experiences in the past with it, and other things related to the ["Docker way"](https://docs.docker.com/v17.09/engine/userguide/eng-image/dockerfile_best-practices/), I'm not saying it's perfect but I wanted some of those things.
+
+Now comes the `php-fpm` healthcheck part, while having in place a healthcheck which requested an url in the application asking if it was alive, it was indirectly testing the whole chain, `Nginx -> php-fpm -> application`, and now I had the chance to test still the whole chain via nginx but also monitor how busy and stable is `php-fpm`, if you [check its `/status` page](https://brandonwamboldt.ca/understanding-the-php-fpm-status-page-1603/) it has quite some useful information, so why not monitor on it? For instance you could make a container unhealthy after a certain amount of requests, or if the queue is too long and even slow requests, and that's what this script tries to achieve!
+
+Good news is that you can still do it even using the mixed container approach, but I wanted to take a time to explain why I came to do it like this now! The advantage in my opinion is that having separate containers you have a better grasp on where the problem is laying and you can restart only what's failing, not the whole, also avoiding Supervisord to restart it for you since you are already behind a container orchestration tool.
 
 ## Installation
 
