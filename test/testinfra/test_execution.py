@@ -20,6 +20,29 @@ def test_valid_with_non_integer_value_exits_properly(host):
     assert cmd.rc == 3
     assert "option value must be an integer" in cmd.stderr
 
+@pytest.mark.php_fpm
+def test_all_available_options_at_once(host):
+    cmd = host.run("php-fpm-healthcheck --accepted-conn=1000 --listen-queue=1000 --max-listen-queue=1000 --listen-queue-len=1000 --idle-processes=1000 --active-processes=1000 --total-processes=1000 --max-active-processes=1000 --max-children-reached=1000 --slow-requests=1000")
+    assert cmd.rc == 0    
+
+@pytest.mark.php_fpm
+@pytest.mark.parametrize("option", [
+    "--accepted-conn",
+    "--listen-queue",
+    "--max-listen-queue",
+    "--idle-processes",
+    "--active-processes",
+    "--total-processes",
+    "--max-active-processes",
+    "--max-children-reached",
+    "--slow-requests",
+])
+def test_all_available_options(host, option):
+    cmd = host.run("php-fpm-healthcheck --verbose {0}=1000".format(option))
+    assert cmd.rc == 0
+    assert "value" in cmd.stdout
+    assert "and expected is less than '1000'" in cmd.stdout
+
 @pytest.mark.alpine
 def test_missing_fcgi_apk(host):
     host.run("apk del fcgi")
