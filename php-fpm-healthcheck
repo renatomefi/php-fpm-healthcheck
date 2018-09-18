@@ -18,7 +18,7 @@
 # Ping mode with data (outputs php-fpm status text): ./php-fpm-healthcheck -v
 #
 # Exit status codes:
-# 9 - Couldn't connect to PHP fpm, is it running?
+# 2,9,111 - Couldn't connect to PHP fpm, is it running?
 # 8 - Couldn't reach PHP fpm status page, have you configured it with `pm.status_path = /status`?
 # 1 - A healthcheck condition has failed
 # 3 - Invalid option given
