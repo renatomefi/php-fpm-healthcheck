@@ -14,12 +14,13 @@ docker stop "$CONTAINER" 1> /dev/null
 }
 trap cleanup EXIT
 
-declare -r DOCKER_IMAGE="$1"
+declare -r DOCKER_FILE="$1"
+declare -r DOCKER_IMAGE="$2"
 
 declare DOCKER_TAG_TEMPORARY
 DOCKER_TAG_TEMPORARY="$DOCKER_IMAGE-$(date +%s)"
 
-sed "s/FROM .*/FROM $DOCKER_IMAGE/g" ./test/Dockerfile | docker build -t "$DOCKER_TAG_TEMPORARY" -f - .
+sed "s/FROM .*/FROM $DOCKER_IMAGE/g" "./test/Dockerfile-$DOCKER_FILE" | docker build -t "$DOCKER_TAG_TEMPORARY" -f - .
 
 declare CONTAINER
 CONTAINER=$(docker run -d --rm "$DOCKER_TAG_TEMPORARY")
@@ -30,4 +31,6 @@ TESTS_DIR="$(pwd)/test"
 docker run --rm -t \
     -v "$TESTS_DIR:/tests" \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
-    renatomefi/docker-testinfra:latest --verbose --hosts="docker://$CONTAINER"
+    renatomefi/docker-testinfra:latest \
+    --verbose --hosts="docker://$CONTAINER" \
+    -m "php_fpm or $DOCKER_FILE"
