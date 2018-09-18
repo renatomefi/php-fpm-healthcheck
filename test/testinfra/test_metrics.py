@@ -1,5 +1,6 @@
 import pytest
 
+@pytest.mark.php_fpm
 def test_metric_accepted_conn(host):
     cmd = host.run("php-fpm-healthcheck -v")
     assert cmd.rc == 0
