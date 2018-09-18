@@ -33,7 +33,7 @@
 # --slow-requests=n
 #
 
-set -euo pipefail
+set -eu
 
 OPTIND=1 # Reset getopt in case it has been used previously in the shell
 
@@ -54,9 +54,9 @@ command -v grep 1> /dev/null || { >&2 echo "Make sure grep is installed (i.e. ap
 get_fpm_status() {
     if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s\\n" "$1"; fi;
     
-    if test ! -z "$FPM_STATUS"; then
-        FPM_STATUS=$(cgi-fcgi -bind -connect "$1" | tail +5)
-    fi;
+    # Since I cannot use pipefail I'll just split these in two commands
+    FPM_STATUS=$(cgi-fcgi -bind -connect "$1")
+    FPM_STATUS=$(echo "$FPM_STATUS" | tail +5)
 
     if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
 }
