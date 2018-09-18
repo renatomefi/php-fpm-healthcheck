@@ -3,7 +3,8 @@
 # Author: <Renato Mefi gh@mefi.in> https://github.com/renatomefi
 #
 # This script is suppose to be ran via Makefile, i.e.:
-# $ make test-image IMAGE="php:7.2-fpm-alpine3.7"
+# $ make test-image DOCKERFILE="alpine" IMAGE="php:7.2-fpm-alpine3.7"
+# $ make test-image DOCKERFILE="stretch" IMAGE="php:7.2-fpm-stretch"
 
 set -eEuo pipefail
 
