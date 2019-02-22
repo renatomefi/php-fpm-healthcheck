@@ -2,6 +2,7 @@ import pytest
 
 @pytest.mark.php_fpm
 def test_metric_fail_accepted_conn(host):
+    host.run("kill -USR2 1") # reset accepted conn value
     cmd = host.run("php-fpm-healthcheck --accepted-conn=0")
     assert cmd.rc == 1
     assert "'accepted conn' value '1' is greater than expected '0'" in cmd.stderr

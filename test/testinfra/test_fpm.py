@@ -32,6 +32,15 @@ def test_fpm_on_socket(host):
     host.run("sed -i /usr/local/etc/php-fpm.d/zz-docker.conf -e '/^listen/ s/.*/listen = 9000/'")
     host.run("kill -USR2 1")
 
+# https://github.com/renatomefi/php-fpm-healthcheck/issues/18
+@pytest.mark.php_fpm
+def test_fpm_on_socket_with_huge_env(host):
+    cmd = host.run("HUGE_ENV=\"$(dd if=/dev/zero bs=8192 count=1 | tr '\\000' '\\040')\" php-fpm-healthcheck -v")
+    assert cmd.rc == 0
+    assert "Trying to connect to php-fpm via:" in cmd.stdout
+    assert "status output:" in cmd.stdout
+    assert "pool:" in cmd.stdout
+
 @pytest.mark.alpine
 def test_exit_when_fpm_is_not_reachable_apk(host):
     cmd = host.run("FCGI_CONNECT=localhost:9001 php-fpm-healthcheck -v")
