@@ -10,4 +10,4 @@ def test_healthcheck_script_is_executable(host):
     scriptFile = host.check_output("which php-fpm-healthcheck")
       
     assert host.file(scriptFile).exists is True
-    assert host.file(scriptFile).mode == 0o775
+    assert host.file(scriptFile).mode & 0o111 == 0o111
