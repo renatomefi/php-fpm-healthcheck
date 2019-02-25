@@ -15,10 +15,11 @@ test: ## Test code in multiple images
 	$(MAKE) test-image IMAGE="php:7.1-fpm-alpine3.8" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.2-fpm-alpine3.7" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.2-fpm-alpine3.8" DOCKERFILE="alpine"
-	$(MAKE) test-image IMAGE="php:7.3-rc-fpm-alpine3.8" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:7.3-fpm-alpine3.8" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:7.3-fpm-alpine3.9" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
 	$(MAKE) test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
-	$(MAKE) test-image IMAGE="php:7.3-rc-fpm-stretch" DOCKERFILE="stretch"
+	$(MAKE) test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
 
 test-image:
 	./test/docker.sh ${DOCKERFILE} ${IMAGE}
