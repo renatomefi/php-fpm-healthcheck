@@ -1,0 +1,12 @@
+# Contributing
+
+Quick set of guideline to contribute to this repo. After you have checked out the code and are ready to send in your PR, just make sure you are following these steps:
+
+- Your changes are covered in by the tests, run `make qa` to lint and test your changes.
+- Your changes are reflected in the README or any other docs that are relevant.
+- Once you are ready to make your commits, ensure they are: 
+    - atomic, meaning they focus on a single set of changes
+    - the commit message is clear, we suggest [this standard](https://chris.beams.io/posts/git-commit/).
+- Follow our PR template when opening the PR.
+
+Thank you for contributing!
