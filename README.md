@@ -30,7 +30,7 @@ On you php-fpm pool configuration add: `pm.status_path = /status`
 
 For instance on the official php image you can alter the file `/usr/local/etc/php-fpm.d/zz-docker.conf`
 
-[See a simple example](https://github.com/renatomefi/php-fpm-healthcheck/blob/master/test/Dockerfile#L7)
+[See a simple example](https://github.com/renatomefi/php-fpm-healthcheck/blob/master/test/Dockerfile-alpine#L7)
 
 [More about PHP fpm pool configuration](http://php.net/manual/en/install.fpm.configuration.php)
 
@@ -45,7 +45,7 @@ The script is POSIX sh but also uses some tools from your operating system, bein
 
 In case you're using alpine you only need to make sure you have installed `busybox` and `fcgi` packages.
 
-[See a simple Dockerfile based on the official PHP image](https://github.com/renatomefi/php-fpm-healthcheck/blob/master/test/Dockerfile)
+[See a simple Dockerfile based on the official PHP image](https://github.com/renatomefi/php-fpm-healthcheck/blob/master/test/Dockerfile-alpine)
 
 ### Download
 
