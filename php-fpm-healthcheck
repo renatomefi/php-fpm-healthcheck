@@ -50,7 +50,7 @@ export SCRIPT_FILENAME="/status"
 FCGI_CONNECT_DEFAULT="localhost:9000"
 
 # Required software
-command -v cgi-fcgi 1> /dev/null || { >&2 echo "Make sure fcgi is installed (i.e. apk add --no-cache fcgi). Aborting."; exit 4; }
+FCGI_CMD_PATH=$(command -v cgi-fcgi) || { >&2 echo "Make sure fcgi is installed (i.e. apk add --no-cache fcgi). Aborting."; exit 4; }
 command -v sed 1> /dev/null || { >&2 echo "Make sure sed is installed (i.e. apk add --no-cache busybox). Aborting."; exit 4; }
 command -v tail 1> /dev/null || { >&2 echo "Make sure tail is installed (i.e. apk add --no-cache busybox). Aborting."; exit 4; }
 command -v grep 1> /dev/null || { >&2 echo "Make sure grep is installed (i.e. apk add --no-cache grep). Aborting."; exit 4; }
@@ -61,7 +61,7 @@ get_fpm_status() {
     if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s\\n" "$1"; fi;
     
     # Since I cannot use pipefail I'll just split these in two commands
-    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" cgi-fcgi -bind -connect "$1" 2> /dev/null)
+    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
     FPM_STATUS=$(echo "$FPM_STATUS" | tail +5)
 
     if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
