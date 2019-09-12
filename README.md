@@ -116,7 +116,7 @@ $ echo $?
 And you can also check if you have more than `10` processes in the queue:
 
 ```console
-$ php-fpm-healthcheck --accepted-conn=3000 --listen-queue-len=10
+$ php-fpm-healthcheck --accepted-conn=3000 --listen-queue=10
 $ echo $?
 0
 ```
@@ -155,7 +155,7 @@ More and more people are looking for health checks on kubernetes for php-fpm, he
             exec:
                 command:
                     - php-fpm-healthcheck
-                    - --listen-queue-len=10 # fails if there are more than 10 processes waiting in the fpm queue
+                    - --listen-queue=10 # fails if there are more than 10 processes waiting in the fpm queue
                     - --accepted-conn=5000 # fails after fpm has served more than 5k requests, this will force the pod to reset, use with caution
             initialDelaySeconds: 0
             periodSeconds: 10
