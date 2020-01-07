@@ -43,12 +43,6 @@ set -eu
 
 OPTIND=1 # Reset getopt in case it has been used previously in the shell
 
-# FastCGI variables
-export REQUEST_METHOD="GET"
-export SCRIPT_NAME="/status"
-export SCRIPT_FILENAME="/status"
-FCGI_CONNECT_DEFAULT="localhost:9000"
-
 # Required software
 FCGI_CMD_PATH=$(command -v cgi-fcgi) || { >&2 echo "Make sure fcgi is installed (i.e. apk add --no-cache fcgi). Aborting."; exit 4; }
 command -v sed 1> /dev/null || { >&2 echo "Make sure sed is installed (i.e. apk add --no-cache busybox). Aborting."; exit 4; }
@@ -120,6 +114,13 @@ fi;
 
 eval set -- "$GETOPT"
 
+# FastCGI variables
+FCGI_CONNECT_DEFAULT="localhost:9000"
+FCGI_STATUS_PATH_DEFAULT="/status"
+
+export REQUEST_METHOD="GET"
+export SCRIPT_NAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
+export SCRIPT_FILENAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
 FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
 
 VERBOSE=0
