@@ -13,6 +13,9 @@ default_workflow_jobs: &default_workflow_jobs
         - lint
   - test-7.3:
       requires:
+        - lint  
+  - test-7.4:
+      requires:
         - lint
         
 workflows:
@@ -31,7 +34,6 @@ jobs:
     steps:
       - checkout
       - run: make test-image IMAGE="php:fpm-alpine" DOCKERFILE="alpine"
-      - run: make test-image IMAGE="php:fpm-stretch" DOCKERFILE="stretch"
 
   test-7.1:
     machine: true
@@ -53,5 +55,15 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run: make test-image IMAGE="php:7.3-rc-fpm-alpine3.8" DOCKERFILE="alpine"
-      - run: make test-image IMAGE="php:7.3-rc-fpm-stretch" DOCKERFILE="stretch"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.8" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.9" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.10" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.11" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
+
+  test-7.4:
+    machine: true
+    steps:
+      - checkout
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.10" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.11" DOCKERFILE="alpine"

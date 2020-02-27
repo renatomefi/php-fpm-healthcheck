@@ -25,8 +25,8 @@ def test_metric_accepted_conn(host):
 
 @pytest.mark.php_fpm
 def test_listen_queue_len_and_listen_queue_vars_are_parsed_correctly(host):
-    cmd = host.run("php-fpm-healthcheck --verbose --listen-queue=5 --listen-queue-len=256")
+    cmd = host.run("php-fpm-healthcheck --verbose --listen-queue=5 --max-listen-queue=1024")
     assert cmd.rc == 0
     assert "Trying to connect to php-fpm via:" in cmd.stdout
     assert "'listen queue' value '0' and expected is less than '5" in cmd.stdout
-    assert "'listen queue len' value '128' and expected is less than '256'" in cmd.stdout
+    assert "'max listen queue' value '0' and expected is less than '1024'" in cmd.stdout
