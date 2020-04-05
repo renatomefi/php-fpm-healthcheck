@@ -83,7 +83,7 @@ Or with `verbose` to see php-fpm status output:
 
 ```console
 $ php-fpm-healthcheck -v
-Trying to connect to php-fpm via: localhost:9000
+Trying to connect to php-fpm via: localhost:9000/status
 php-fpm status output:
 pool:                 www
 process manager:      dynamic
@@ -136,6 +136,21 @@ You can simply specify `FCGI_CONNECT` variable with your connection uri:
 
 ```console
 $ FCGI_CONNECT=/var/run/php-fpm.sock php-fpm-healthcheck
+$ echo $?
+0
+```
+
+### Alternative status page path
+
+_Since v0.5.0_
+
+While the default status page path is `/status`, you can replace it in your php-fpm configuration, in order to change
+also in the script in you can specify `FCGI_STATUS_PATH` env var within your connection uri:
+
+```console
+$ FCGI_STATUS_PATH=/custom-status-path php-fpm-healthcheck -v
+Trying to connect to php-fpm via: localhost:9000/custom-status-path
+...
 $ echo $?
 0
 ```
