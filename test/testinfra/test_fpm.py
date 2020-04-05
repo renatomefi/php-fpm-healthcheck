@@ -47,6 +47,20 @@ def test_fpm_on_socket_with_huge_env(host, setup_fpm_to_default_fixture):
     assert "status output:" in cmd.stdout
     assert "pool:" in cmd.stdout
 
+@pytest.mark.php_fpm
+def test_default_status_page_path(host, setup_fpm_to_default_fixture):
+    cmd = host.run("php-fpm-healthcheck -v")
+    assert cmd.rc == 0
+    assert "Trying to connect to php-fpm via: localhost:9000/status" in cmd.stdout
+
+@pytest.mark.php_fpm
+def test_exit_when_fpm_is_invalid_path(host, setup_fpm_to_default_fixture):
+    cmd = host.run("FCGI_STATUS_PATH=/invalid php-fpm-healthcheck -v")
+    assert cmd.rc == 8
+    assert "Trying to connect to php-fpm via: localhost:9000/invalid" in cmd.stdout
+    assert "File not found." in cmd.stdout
+    assert "php-fpm status page non reachable" in cmd.stderr
+
 @pytest.mark.alpine
 def test_exit_when_fpm_is_not_reachable_apk(host, setup_fpm_to_default_fixture):
     cmd = host.run("FCGI_CONNECT=localhost:9001 php-fpm-healthcheck -v")
@@ -70,3 +84,4 @@ def test_exit_when_fpm_is_invalid_host_apt(host, setup_fpm_to_default_fixture):
     cmd = host.run("FCGI_CONNECT=abc php-fpm-healthcheck -v")
     assert cmd.rc == 2
     assert "Trying to connect to php-fpm via: abc" in cmd.stdout
+
