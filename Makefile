@@ -11,15 +11,19 @@ lint: php-fpm-healthcheck ## Lint code
 
 test: ## Test code in multiple images
 	$(MAKE) test-image IMAGE="php:fpm-alpine" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:fpm-buster" DOCKERFILE="buster"
 	$(MAKE) test-image IMAGE="php:7.1-fpm-alpine3.7" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.1-fpm-alpine3.8" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.2-fpm-alpine3.7" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.2-fpm-alpine3.8" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.3-fpm-alpine3.8" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.3-fpm-alpine3.9" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:7.4-fpm-alpine3.10" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:7.4-fpm-alpine3.11" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
 	$(MAKE) test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
 	$(MAKE) test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
+	$(MAKE) test-image IMAGE="php:7.4-fpm-buster" DOCKERFILE="buster"
 
 test-image:
 	./test/docker.sh ${DOCKERFILE} ${IMAGE}
