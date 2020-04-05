@@ -50,13 +50,13 @@ def test_fpm_on_socket_with_huge_env(host, setup_fpm_to_default_fixture):
 @pytest.mark.alpine
 def test_exit_when_fpm_is_not_reachable_apk(host, setup_fpm_to_default_fixture):
     cmd = host.run("FCGI_CONNECT=localhost:9001 php-fpm-healthcheck -v")
-    assert cmd.rc == 9
+    assert cmd.rc in (111, 9)
     assert "Trying to connect to php-fpm via: localhost:9001" in cmd.stdout
 
 @pytest.mark.alpine
 def test_exit_when_fpm_is_invalid_host_apk(host, setup_fpm_to_default_fixture):
     cmd = host.run("FCGI_CONNECT=abc php-fpm-healthcheck -v")
-    assert cmd.rc == 9
+    assert cmd.rc in (2, 9)
     assert "Trying to connect to php-fpm via: abc" in cmd.stdout
 
 @pytest.mark.stretch
