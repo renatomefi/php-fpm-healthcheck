@@ -11,7 +11,7 @@ set -eEuo pipefail
 function cleanup {
 docker stop "$CONTAINER" 1> /dev/null
     echo "container $CONTAINER: stopped"
-     docker rmi -f "$DOCKER_TAG_TEMPORARY"
+    docker rmi -f "$DOCKER_TAG_TEMPORARY"
 }
 trap cleanup EXIT
 
