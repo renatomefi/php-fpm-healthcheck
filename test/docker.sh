@@ -32,6 +32,6 @@ TESTS_DIR="$(pwd)/test"
 docker run --rm -t \
     -v "$TESTS_DIR:/tests" \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
-    renatomefi/docker-testinfra:latest \
+    renatomefi/docker-testinfra:5 \
     --verbose --hosts="docker://$CONTAINER" \
     -m "php_fpm or $DOCKER_FILE"
