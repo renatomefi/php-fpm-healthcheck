@@ -56,7 +56,11 @@ get_fpm_status() {
     
     # Since I cannot use pipefail I'll just split these in two commands
     FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
-    FPM_STATUS=$(echo "$FPM_STATUS" | tail +5)
+    if [ -f /etc/redhat-release ]; then
+        FPM_STATUS=$(echo "$FPM_STATUS" | tail -n +5)
+    else
+        FPM_STATUS=$(echo "$FPM_STATUS" | tail +5)
+    fi;
 
     if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
 
