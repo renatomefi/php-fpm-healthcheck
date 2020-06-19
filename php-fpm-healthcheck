@@ -52,10 +52,10 @@ command -v grep 1> /dev/null || { >&2 echo "Make sure grep is installed (i.e. ap
 # Get status from fastcgi connection
 # $1 - cgi-fcgi connect argument
 get_fpm_status() {
-    if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s%s\\n" "$1" "$SCRIPT_NAME"; fi;
+    if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s%s\\n" "$1" "$REQUEST_URI"; fi;
     
     # Since I cannot use pipefail I'll just split these in two commands
-    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
+    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" REQUEST_URI="$REQUEST_URI" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
     FPM_STATUS=$(echo "$FPM_STATUS" | tail +5)
 
     if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
@@ -119,8 +119,10 @@ FCGI_CONNECT_DEFAULT="localhost:9000"
 FCGI_STATUS_PATH_DEFAULT="/status"
 
 export REQUEST_METHOD="GET"
-export SCRIPT_NAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
-export SCRIPT_FILENAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
+export REQUEST_URI="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
+export SCRIPT_NAME="${FCGI_CONTROLLER_SCRIPT:-$REQUEST_URI}"
+export SCRIPT_FILENAME="${FCGI_CONTROLLER_SCRIPT:-$REQUEST_URI}"
+
 FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
 
 VERBOSE=0
