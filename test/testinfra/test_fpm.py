@@ -19,7 +19,7 @@ def test_exit_when_no_status_page_is_configured(host, setup_fpm_to_default_fixtu
     # disable fpm status page
     host.run("sed -i /usr/local/etc/php-fpm.d/zz-docker.conf -e '/pm.status_path/ s/^;*/;/'")
     host.run("kill -USR2 1")
-    
+
     cmd = host.run("php-fpm-healthcheck -v")
     assert cmd.rc == 8
     assert "Trying to connect to php-fpm via:" in cmd.stdout
@@ -31,7 +31,7 @@ def test_fpm_on_socket(host, setup_fpm_to_default_fixture):
     # change fpm to socket
     host.run("sed -i /usr/local/etc/php-fpm.d/zz-docker.conf -e '/^listen/ s/.*/listen = \\/var\\/run\\/php-fpm.sock/'")
     host.run("kill -USR2 1")
-    
+
     cmd = host.run("FCGI_CONNECT=/var/run/php-fpm.sock php-fpm-healthcheck -v")
     assert cmd.rc == 0
     assert "Trying to connect to php-fpm via:" in cmd.stdout
@@ -54,10 +54,38 @@ def test_default_status_page_path(host, setup_fpm_to_default_fixture):
     assert "Trying to connect to php-fpm via: localhost:9000/status" in cmd.stdout
 
 @pytest.mark.php_fpm
+def test_custom_status_page_controller(host, setup_fpm_to_default_fixture):
+    host.run("mkdir -p /var/www/html/controller")
+    host.run("touch /var/www/html/controller/index.php")
+    host.run("echo \"<?php http_response_code(200);\" > /var/www/html/controller/index.php")
+
+    cmd = host.run("FCGI_CONTROLLER_SCRIPT=/var/www/html/controller/index.php php-fpm-healthcheck -v")
+    assert cmd.rc == 0
+    assert "Trying to connect to php-fpm via: localhost:9000/status" in cmd.stdout
+
+@pytest.mark.php_fpm
+def test_custom_status_page_controller_and_custom_path(host, setup_fpm_to_default_fixture):
+    host.run("mkdir -p /var/www/html/controller")
+    host.run("touch /var/www/html/controller/index.php")
+    host.run("echo \"<?php http_response_code(200);\" > /var/www/html/controller/index.php")
+
+    cmd = host.run("FCGI_STATUS_PATH=/custom-status-path FCGI_CONTROLLER_SCRIPT=/var/www/html/controller/index.php php-fpm-healthcheck -v")
+    assert cmd.rc == 0
+    assert "Trying to connect to php-fpm via: localhost:9000/custom-status-path" in cmd.stdout
+
+@pytest.mark.php_fpm
 def test_exit_when_fpm_is_invalid_path(host, setup_fpm_to_default_fixture):
     cmd = host.run("FCGI_STATUS_PATH=/invalid php-fpm-healthcheck -v")
     assert cmd.rc == 8
     assert "Trying to connect to php-fpm via: localhost:9000/invalid" in cmd.stdout
+    assert "File not found." in cmd.stdout
+    assert "php-fpm status page non reachable" in cmd.stderr
+
+@pytest.mark.php_fpm
+def test_exit_when_custom_status_page_controller_is_invalid(host, setup_fpm_to_default_fixture):
+    cmd = host.run("FCGI_CONTROLLER_SCRIPT=/var/www/html/invalid/index.php php-fpm-healthcheck -v")
+    assert cmd.rc == 8
+    assert "Trying to connect to php-fpm via: localhost:9000/status" in cmd.stdout
     assert "File not found." in cmd.stdout
     assert "php-fpm status page non reachable" in cmd.stderr
 
