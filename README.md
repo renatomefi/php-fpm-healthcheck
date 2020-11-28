@@ -155,6 +155,21 @@ $ echo $?
 0
 ```
 
+### Custom values check
+
+_Since v0.6.0_
+
+In case of the use of a self-rendered status page, it also can become necessary to check for custom parameters. It is possible to define
+custom parameters using`FCGI_HEALTH_PARAMS` env var. Multiple parameters can be set and separated by commas.
+
+```console
+$ FCGI_HEALTH_PARAMS=custom-param-1,custom-param-2 php-fpm-healthcheck -v --custom-param-1=100 --custom-param-2=10
+Trying to connect to php-fpm via: localhost:9000/custom-status-path
+...
+$ echo $?
+0
+```
+
 ## Kubernetes example
 
 More and more people are looking for health checks on kubernetes for php-fpm, here is an example of livenessProbe and readinessProbe:

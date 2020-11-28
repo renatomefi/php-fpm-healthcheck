@@ -30,3 +30,12 @@ def test_listen_queue_len_and_listen_queue_vars_are_parsed_correctly(host):
     assert "Trying to connect to php-fpm via:" in cmd.stdout
     assert "'listen queue' value '0' and expected is less than '5" in cmd.stdout
     assert "'max listen queue' value '0' and expected is less than '1024'" in cmd.stdout
+
+# @pytest.mark.php_fpm
+# def test_multiple_custom_option_are_parsed_correctly(host):
+#     This test should be only included when possible to use custom status page
+#     cmd = host.run("FCGI_HEALTH_PARAMS=custom-param-one,custom-param-two php-fpm-healthcheck "
+#                    "--verbose --custom-param-one=5 --custom-param-two=1024")
+#     assert "Trying to connect to php-fpm via:" in cmd.stdout
+#     assert "'custom param one' value '0' and expected is less than '5" in cmd.stdout
+#     assert "'custom param two' value '0' and expected is less than '1024'" in cmd.stdout
