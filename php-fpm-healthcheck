@@ -18,11 +18,14 @@
 # Ping mode with data (outputs php-fpm status text): ./php-fpm-healthcheck -v
 #
 # Exit status codes:
-# 2,9,111 - Couldn't connect to PHP fpm, is it running?
-# 8 - Couldn't reach PHP fpm status page, have you configured it with `pm.status_path = /status`?
 # 1 - A healthcheck condition has failed
+# 2 - Couldn't connect to PHP fpm, is it running?
 # 3 - Invalid option given
 # 4 - One or more required softwares are missing
+# 8 - Couldn't reach PHP fpm status page, have you configured it with `pm.status_path = /status`?
+# 9 - Couldn't connect to PHP fpm, is it running?
+# 10 - Invalid PHP fpm status page response
+# 111 - Couldn't connect to PHP fpm, is it running?
 #
 # Available options:
 # -v|--verbose
@@ -52,16 +55,21 @@ command -v grep 1> /dev/null || { >&2 echo "Make sure grep is installed (i.e. ap
 # Get status from fastcgi connection
 # $1 - cgi-fcgi connect argument
 get_fpm_status() {
-    if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s%s\\n" "$1" "$SCRIPT_NAME"; fi;
-    
-    # Since I cannot use pipefail I'll just split these in two commands
+    if test "$VERBOSE" = 1; then printf "Trying to connect to PHP-FPM via: %s%s\\n" "$1" "$SCRIPT_NAME"; fi;
+
     FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
-    FPM_STATUS=$(echo "$FPM_STATUS" | tail +5)
+    RESPONSE_CODE=$(echo "$FPM_STATUS" | sed -n '/Status:/p' | sed -e 's/[^0-9]//g')
 
-    if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
+    # If missing status code, assume 200
+    if ! test "$RESPONSE_CODE" -eq "$RESPONSE_CODE" 2> /dev/null; then
+        RESPONSE_CODE=200
+    fi
 
-    if test "$FPM_STATUS" = "File not found."; then
-        >&2 printf "php-fpm status page non reachable\\n";
+    if test "$RESPONSE_CODE" -ge 200 -a "$RESPONSE_CODE" -lt 400; then
+        if test "$VERBOSE" = 1; then printf "PHP-FPM status output:\\n%s\\n" "$(echo "$FPM_STATUS" | tail +5)"; fi;
+        return
+    else
+        >&2 printf "PHP-FPM status page non reachable. Error: %s\\n" "$RESPONSE_CODE";
         exit 8;
     fi;
 }
