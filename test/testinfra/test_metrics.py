@@ -19,14 +19,14 @@ def test_metric_fail_accepted_conn_with_other_metrics(host):
 def test_metric_accepted_conn(host):
     cmd = host.run("php-fpm-healthcheck -v")
     assert cmd.rc == 0
-    assert "Trying to connect to php-fpm via:" in cmd.stdout
-    assert "status output:" in cmd.stdout
+    assert "Trying to connect to PHP-FPM via:" in cmd.stdout
+    assert "PHP-FPM status output:" in cmd.stdout
     assert "pool:" in cmd.stdout
 
 @pytest.mark.php_fpm
 def test_listen_queue_len_and_listen_queue_vars_are_parsed_correctly(host):
     cmd = host.run("php-fpm-healthcheck --verbose --listen-queue=5 --max-listen-queue=1024")
     assert cmd.rc == 0
-    assert "Trying to connect to php-fpm via:" in cmd.stdout
+    assert "Trying to connect to PHP-FPM via:" in cmd.stdout
     assert "'listen queue' value '0' and expected is less than '5" in cmd.stdout
     assert "'max listen queue' value '0' and expected is less than '1024'" in cmd.stdout
