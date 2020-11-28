@@ -108,20 +108,36 @@ check_fpm_health() {
     done
 }
 
-if ! GETOPT=$(getopt -o v --long verbose,accepted-conn:,listen-queue:,max-listen-queue:,listen-queue-len:,idle-processes:,active-processes:,total-processes:,max-active-processes:,max-children-reached:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
-    >&2 echo "Invalid options, terminating." ; exit 3
-fi;
-
-eval set -- "$GETOPT"
-
 # FastCGI variables
 FCGI_CONNECT_DEFAULT="localhost:9000"
 FCGI_STATUS_PATH_DEFAULT="/status"
+FCGI_HEALTH_PARAMS_DEFAULT=accepted-conn,listen-queue,max-listen-queue,listen-queue-len,idle-processes,active-processes,total-processes,max-active-processes,max-children-reached,slow-requests,
+SCRIPT_FLAGS=verbose
+
+FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
 
 export REQUEST_METHOD="GET"
 export SCRIPT_NAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
 export SCRIPT_FILENAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
-FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
+
+# Expand script parameters
+GETOPT_LIST="$FCGI_HEALTH_PARAMS_DEFAULT"
+if ! test -z ${FCGI_HEALTH_PARAMS+x}; then
+    GETOPT_LIST="$GETOPT_LIST,$FCGI_HEALTH_PARAMS,"
+fi;
+
+# Sanitize optional values and add option-name divisor
+GETOPT_LIST=$(echo "$GETOPT_LIST" | sed 's/ //g' | sed 's/,,/,/g')
+GETOPT_LIST=$(echo "$GETOPT_LIST" | sed 's/,/:,/g')
+
+GETOPT_LIST="$GETOPT_LIST,$SCRIPT_FLAGS"
+GETOPT_LIST=$(echo "$GETOPT_LIST" | sed 's/ //g' | sed 's/,,/,/g')
+
+if ! GETOPT=$(getopt -o v --long "$GETOPT_LIST" -n 'php-fpm-healthcheck' -- "$@"); then
+    >&2 echo "Invalid options, terminating." ; exit 3
+fi;
+
+eval set -- "$GETOPT"
 
 VERBOSE=0
 
