@@ -155,6 +155,18 @@ $ echo $?
 0
 ```
 
+## Docker example
+
+You can use `HEALTHCHECK` command on `Dockerfile` to define the health of your
+container. According to (Docker Docs)[https://docs.docker.com/engine/reference/builder/#healthcheck],
+possible return values are `0` for success, `1` to unhealthy and `2` is reserved
+and we **must not** use this exit code.
+
+```Dockerfile
+HEALTHCHECK --interval=5s --timeout=1s \
+    CMD php-fpm-healthcheck || exit 1
+```
+
 ## Kubernetes example
 
 More and more people are looking for health checks on kubernetes for php-fpm, here is an example of livenessProbe and readinessProbe:
