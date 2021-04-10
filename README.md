@@ -203,6 +203,9 @@ More and more people are looking for health checks on kubernetes for php-fpm, he
             periodSeconds: 5
 ```
 
+Docker `HEALTHCHECK` command is ignored on Kubernetes and you must define it
+using pod specifications.
+
 ## Why POSIX sh
 
 Most of the containers contain limited software installed, using POSIX sh aims to be compatible with most of the OS images around.
