@@ -7,6 +7,7 @@ This POSIX compliant sh script gets php-fpm status page using `cgi-fcgi` tool, p
 - [Motivation](#motivation)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Docker example](#docker-example)
 - [Kubernetes example](#kubernetes-example)
 - [Why POSIX sh?](#why-posix-sh)
 - [Author and License](#author)
