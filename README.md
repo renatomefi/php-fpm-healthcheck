@@ -7,6 +7,7 @@ This POSIX compliant sh script gets php-fpm status page using `cgi-fcgi` tool, p
 - [Motivation](#motivation)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Docker example](#docker-example)
 - [Kubernetes example](#kubernetes-example)
 - [Why POSIX sh?](#why-posix-sh)
 - [Author and License](#author)
@@ -155,6 +156,18 @@ $ echo $?
 0
 ```
 
+## Docker example
+
+You can use `HEALTHCHECK` command on `Dockerfile` to define the health of your
+container. According to (Docker Docs)[https://docs.docker.com/engine/reference/builder/#healthcheck],
+possible return values are `0` for success, `1` to unhealthy and `2` is reserved
+and we **must not** use this exit code.
+
+```Dockerfile
+HEALTHCHECK --interval=5s --timeout=1s \
+    CMD php-fpm-healthcheck || exit 1
+```
+
 ## Kubernetes example
 
 More and more people are looking for health checks on kubernetes for php-fpm, here is an example of livenessProbe and readinessProbe:
@@ -190,6 +203,9 @@ More and more people are looking for health checks on kubernetes for php-fpm, he
             initialDelaySeconds: 1
             periodSeconds: 5
 ```
+
+Docker `HEALTHCHECK` command is ignored on Kubernetes and you must define it
+using pod specifications.
 
 ## Why POSIX sh
 
