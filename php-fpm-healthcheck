@@ -60,7 +60,7 @@ get_fpm_status() {
 
     if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
 
-    if test "$FPM_STATUS" = "File not found."; then
+    if [ "$FPM_STATUS" = "File not found." ] || [ "${FPM_STATUS#*File not found.}" != "$FPM_STATUS" ] || [ "$FPM_STATUS" = "Primary script unknown" ]; then
         >&2 printf "php-fpm status page non reachable\\n";
         exit 8;
     fi;
