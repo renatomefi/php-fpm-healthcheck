@@ -155,6 +155,23 @@ $ echo $?
 0
 ```
 
+### Custom status page rendered by a controller
+
+_Since v0.6.0_
+
+While using php-fpm status page as your health check data source, only the use of the default `/status` path or defining your
+preference using `FCGI_STATUS_PATH` already does the job. In case of use of a custom controller to render those definitions,
+it also becomes necessary to define `FCGI_CONTROLLER_SCRIPT` env var with the script, as an `index.php`, that starts your router 
+and controller:
+
+```console
+$ FCGI_STATUS_PATH=/custom-status-path FCGI_CONTROLLER_SCRIPT=/var/www/project/index.php php-fpm-healthcheck -v
+Trying to connect to php-fpm via: localhost:9000/custom-status-path
+...
+$ echo $?
+0
+```
+
 ## Kubernetes example
 
 More and more people are looking for health checks on kubernetes for php-fpm, here is an example of livenessProbe and readinessProbe:
