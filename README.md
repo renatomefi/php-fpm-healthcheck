@@ -159,7 +159,7 @@ $ echo $?
 ## Docker example
 
 You can use `HEALTHCHECK` command on `Dockerfile` to define the health of your
-container. According to (Docker Docs)[https://docs.docker.com/engine/reference/builder/#healthcheck],
+container. According to [Docker Docs](https://docs.docker.com/engine/reference/builder/#healthcheck),
 possible return values are `0` for success, `1` to unhealthy and `2` is reserved
 and we **must not** use this exit code.
 
