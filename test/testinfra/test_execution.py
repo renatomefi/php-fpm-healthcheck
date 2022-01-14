@@ -66,3 +66,8 @@ def test_missing_fcgi_apt(host):
     # Fail safe for other tests, maybe we could use a docker fixture
     # to start a new container everytime
     host.run("apt-get install -y libfcgi-bin")
+
+@pytest.mark.stretch
+def test_listen_queue_issue40(host):
+    cmd = host.run("php-fpm-healthcheck --listen-queue=10")
+    assert cmd.rc == 0
