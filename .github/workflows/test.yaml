@@ -11,86 +11,86 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: lint
-        run: make lint
+      - uses: actions/checkout@v2
+      - run: make lint
 
   test-71:
-    name: php-7.1
     runs-on: ubuntu-latest
     needs: lint
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: alpine-3.7
-        run: make test-image IMAGE="php:7.1-fpm-alpine3.7" DOCKERFILE="alpine"
-
-      - name: alpine-3.8
-        run: make test-image IMAGE="php:7.1-fpm-alpine3.8" DOCKERFILE="alpine"
-
-      - name: stretch
-        run: make test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
+      - uses: actions/checkout@v2
+      - run: make test-image IMAGE="php:7.1-fpm-alpine3.7" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.1-fpm-alpine3.8" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.1-fpm-alpine3.9" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.1-fpm-alpine3.10" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
+      - run: make test-image IMAGE="php:7.1-fpm-buster" DOCKERFILE="buster"
 
   test-72:
-    name: php-7.2
     runs-on: ubuntu-latest
     needs: lint
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: alpine-3.7
-        run: make test-image IMAGE="php:7.2-fpm-alpine3.7" DOCKERFILE="alpine"
-
-      - name: alpine-3.8
-        run: make test-image IMAGE="php:7.2-fpm-alpine3.8" DOCKERFILE="alpine"
-
-      - name: stretch
-        run: make test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
+      - uses: actions/checkout@v2
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.7" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.8" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.9" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.10" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.11" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.2-fpm-alpine3.12" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
+      - run: make test-image IMAGE="php:7.2-fpm-buster" DOCKERFILE="buster"
 
   test-73:
-    name: php-7.3
     runs-on: ubuntu-latest
     needs: lint
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: alpine-3.8
-        run: make test-image IMAGE="php:7.3-fpm-alpine3.8" DOCKERFILE="alpine"
-
-      - name: alpine-3.9
-        run: make test-image IMAGE="php:7.3-fpm-alpine3.9" DOCKERFILE="alpine"
-
-      - name: alpine-3.10
-        run: make test-image IMAGE="php:7.3-fpm-alpine3.10" DOCKERFILE="alpine"
-
-      - name: alpine-3.11
-        run: make test-image IMAGE="php:7.3-fpm-alpine3.11" DOCKERFILE="alpine"
-
-      - name: stretch
-        run: make test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
+      - uses: actions/checkout@v2
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.8" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.9" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.10" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.11" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.12" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.13" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.14" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-alpine3.15" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
+      - run: make test-image IMAGE="php:7.3-fpm-buster" DOCKERFILE="buster"
 
   test-74:
-    name: php-7.4
     runs-on: ubuntu-latest
     needs: lint
     steps:
 
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.10" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.11" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.12" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.13" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.14" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.4-fpm-alpine3.15" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:7.4-fpm-buster" DOCKERFILE="buster"
 
-      - name: alpine-3.10
-        run: make test-image IMAGE="php:7.4-fpm-alpine3.10" DOCKERFILE="alpine"
+  test-80:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
 
-      - name: alpine-3.11
-        run: make test-image IMAGE="php:7.4-fpm-alpine3.11" DOCKERFILE="alpine"
+      - uses: actions/checkout@v2
+      - run: make test-image IMAGE="php:8.0-fpm-alpine3.12" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:8.0-fpm-alpine3.13" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:8.0-fpm-alpine3.14" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:8.0-fpm-alpine3.15" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:8.0-fpm-buster" DOCKERFILE="buster"
 
-      - name: buster
-        run: make test-image IMAGE="php:7.4-fpm-buster" DOCKERFILE="buster"
+  test-81:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+
+      - uses: actions/checkout@v2
+      - run: make test-image IMAGE="php:8.1-fpm-alpine3.14" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:8.1-fpm-alpine3.15" DOCKERFILE="alpine"
+      - run: make test-image IMAGE="php:8.1-fpm-buster" DOCKERFILE="buster"
