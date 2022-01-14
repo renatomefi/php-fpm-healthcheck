@@ -8,18 +8,35 @@ on:
 
 jobs:
   test-71:
-    name: PHP 7.1
+    name: php-7.1
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Alpine 3.7
+      - name: alpine-3.7
         run: make test-image IMAGE="php:7.1-fpm-alpine3.7" DOCKERFILE="alpine"
 
-      - name: Alpine 3.8
+      - name: alpine-3.8
         run: make test-image IMAGE="php:7.1-fpm-alpine3.8" DOCKERFILE="alpine"
 
-      - name: Stretch
+      - name: stretch
         run: make test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
+
+  test-72:
+    name: php-7.2
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: alpine-3.7
+        run: make test-image IMAGE="php:7.2-fpm-alpine3.7" DOCKERFILE="alpine"
+
+      - name: alpine-3.8
+        run: make test-image IMAGE="php:7.2-fpm-alpine3.8" DOCKERFILE="alpine"
+
+      - name: stretch
+        run: make test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
