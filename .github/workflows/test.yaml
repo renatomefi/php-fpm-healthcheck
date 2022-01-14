@@ -32,6 +32,12 @@ jobs:
       - name: alpine-3.8
         run: make test-image IMAGE="php:7.1-fpm-alpine3.8" DOCKERFILE="alpine"
 
+      - name: alpine-3.9
+        run: make test-image IMAGE="php:7.1-fpm-alpine3.9" DOCKERFILE="alpine"
+
+      - name: alpine-3.10
+        run: make test-image IMAGE="php:7.1-fpm-alpine3.10" DOCKERFILE="alpine"
+
       - name: stretch
         run: make test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
 
@@ -49,6 +55,18 @@ jobs:
 
       - name: alpine-3.8
         run: make test-image IMAGE="php:7.2-fpm-alpine3.8" DOCKERFILE="alpine"
+
+      - name: alpine-3.9
+        run: make test-image IMAGE="php:7.2-fpm-alpine3.9" DOCKERFILE="alpine"
+
+      - name: alpine-3.10
+        run: make test-image IMAGE="php:7.2-fpm-alpine3.10" DOCKERFILE="alpine"
+
+      - name: alpine-3.11
+        run: make test-image IMAGE="php:7.2-fpm-alpine3.11" DOCKERFILE="alpine"
+
+      - name: alpine-3.12
+        run: make test-image IMAGE="php:7.2-fpm-alpine3.12" DOCKERFILE="alpine"
 
       - name: stretch
         run: make test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
@@ -74,6 +92,18 @@ jobs:
       - name: alpine-3.11
         run: make test-image IMAGE="php:7.3-fpm-alpine3.11" DOCKERFILE="alpine"
 
+      - name: alpine-3.12
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.12" DOCKERFILE="alpine"
+
+      - name: alpine-3.13
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.13" DOCKERFILE="alpine"
+
+      - name: alpine-3.14
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.14" DOCKERFILE="alpine"
+
+      - name: alpine-3.15
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.15" DOCKERFILE="alpine"
+
       - name: stretch
         run: make test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
 
@@ -91,6 +121,18 @@ jobs:
 
       - name: alpine-3.11
         run: make test-image IMAGE="php:7.4-fpm-alpine3.11" DOCKERFILE="alpine"
+
+      - name: alpine-3.12
+        run: make test-image IMAGE="php:7.4-fpm-alpine3.12" DOCKERFILE="alpine"
+
+      - name: alpine-3.13
+        run: make test-image IMAGE="php:7.4-fpm-alpine3.13" DOCKERFILE="alpine"
+
+      - name: alpine-3.14
+        run: make test-image IMAGE="php:7.4-fpm-alpine3.14" DOCKERFILE="alpine"
+
+      - name: alpine-3.15
+        run: make test-image IMAGE="php:7.4-fpm-alpine3.15" DOCKERFILE="alpine"
 
       - name: buster
         run: make test-image IMAGE="php:7.4-fpm-buster" DOCKERFILE="buster"
