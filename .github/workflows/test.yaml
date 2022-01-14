@@ -41,6 +41,9 @@ jobs:
       - name: stretch
         run: make test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
 
+      - name: buster
+        run: make test-image IMAGE="php:7.1-fpm-buster" DOCKERFILE="buster"
+
   test-72:
     name: php-7.2
     runs-on: ubuntu-latest
@@ -70,6 +73,9 @@ jobs:
 
       - name: stretch
         run: make test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
+
+      - name: buster
+        run: make test-image IMAGE="php:7.2-fpm-buster" DOCKERFILE="buster"
 
   test-73:
     name: php-7.3
@@ -106,6 +112,9 @@ jobs:
 
       - name: stretch
         run: make test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
+
+      - name: buster
+        run: make test-image IMAGE="php:7.3-fpm-buster" DOCKERFILE="buster"
 
   test-74:
     name: php-7.4
