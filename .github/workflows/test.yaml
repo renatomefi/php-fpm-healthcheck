@@ -40,3 +40,26 @@ jobs:
 
       - name: stretch
         run: make test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
+
+  test-73:
+    name: php-7.3
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: alpine-3.8
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.8" DOCKERFILE="alpine"
+
+      - name: alpine-3.9
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.9" DOCKERFILE="alpine"
+
+      - name: alpine-3.10
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.10" DOCKERFILE="alpine"
+
+      - name: alpine-3.11
+        run: make test-image IMAGE="php:7.3-fpm-alpine3.11" DOCKERFILE="alpine"
+
+      - name: stretch
+        run: make test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
