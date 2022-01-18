@@ -132,6 +132,18 @@ $ echo $?
 1
 ```
 
+### Timeout
+
+You can define a timeout in seconds to avoid hanging from `cgi-fcgi` and stop it
+before `php-fpm` sends a response. `php-fpm-healthcheck` will return code `124`
+or `129` depending on the implementation of `timeout`.
+
+```console
+$ php-fpm-healthcheck --timeout=5
+$ echo $?
+129
+```
+
 ### Connection via socket or another host
 
 You can simply specify `FCGI_CONNECT` variable with your connection uri:
