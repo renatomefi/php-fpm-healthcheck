@@ -43,6 +43,7 @@ The script is POSIX sh but also uses some tools from your operating system, bein
 - sed
 - tail
 - grep
+- timeout (optional)
 
 In case you're using alpine you only need to make sure you have installed `busybox` and `fcgi` packages.
 
@@ -129,6 +130,18 @@ $ php-fpm-healthcheck --accepted-conn=1
 'accepted conn' value '6' is greater than expected '1'
 $ echo $?
 1
+```
+
+### Timeout
+
+You can define a timeout in seconds to avoid hanging from `cgi-fcgi` and stop it
+before `php-fpm` sends a response. `php-fpm-healthcheck` will return code `124`
+or `129` depending on the implementation of `timeout`.
+
+```console
+$ php-fpm-healthcheck --timeout=5
+$ echo $?
+129
 ```
 
 ### Connection via socket or another host

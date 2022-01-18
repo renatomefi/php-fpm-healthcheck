@@ -23,9 +23,11 @@
 # 1 - A healthcheck condition has failed
 # 3 - Invalid option given
 # 4 - One or more required softwares are missing
+# 124,129 - Request timeout
 #
 # Available options:
 # -v|--verbose
+# --timeout=n
 # 
 # Metric options, fails in case the CURRENT VALUE is bigger than the GIVEN VALUE
 # --accepted-conn=n
@@ -49,13 +51,32 @@ command -v sed 1> /dev/null || { >&2 echo "Make sure sed is installed (i.e. apk 
 command -v tail 1> /dev/null || { >&2 echo "Make sure tail is installed (i.e. apk add --no-cache busybox). Aborting."; exit 4; }
 command -v grep 1> /dev/null || { >&2 echo "Make sure grep is installed (i.e. apk add --no-cache grep). Aborting."; exit 4; }
 
+TIMEOUT=""
+
+# Configures a timeout for cgi-fcgi connection
+# $1 - timeout in seconds
+set_timeout() {
+    if ! test "$1" -eq "$1" 2> /dev/null; then
+        >&2 printf "'--timeout' option value must be an integer, '%s' given\\n" "$1"; exit 3;
+    fi
+
+    command -v timeout 1> /dev/null || { >&2 echo "Make sure timeout is installed (i.e. apk add --no-cache timeout). Aborting."; exit 4; }
+
+    # if SIGTERM is used it returns 4 on busybox and conflicts with required software missing rc
+    # with SIGHUP timeout returns 124 on coreutils and 129 on busybox
+    TIMEOUT="timeout -s HUP $1"
+}
+
 # Get status from fastcgi connection
 # $1 - cgi-fcgi connect argument
 get_fpm_status() {
     if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s%s\\n" "$1" "$SCRIPT_NAME"; fi;
     
     # Since I cannot use pipefail I'll just split these in two commands
-    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
+    # Timeout will expand if configured and must not be quoted!
+    # TODO implement https://github-wiki-see.page/m/koalaman/shellcheck/wiki/Sc2086
+    # shellcheck disable=SC2086
+    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" $TIMEOUT "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
     FPM_STATUS=$(echo "$FPM_STATUS" | tail -n +5)
 
     if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
@@ -108,7 +129,7 @@ check_fpm_health() {
     done
 }
 
-if ! GETOPT=$(getopt -o v --long verbose,accepted-conn:,listen-queue:,max-listen-queue:,listen-queue-len:,idle-processes:,active-processes:,total-processes:,max-active-processes:,max-children-reached:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
+if ! GETOPT=$(getopt -o v --long verbose,timeout:,accepted-conn:,listen-queue:,max-listen-queue:,listen-queue-len:,idle-processes:,active-processes:,total-processes:,max-active-processes:,max-children-reached:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
     >&2 echo "Invalid options, terminating." ; exit 3
 fi;
 
@@ -128,6 +149,7 @@ VERBOSE=0
 while test "$1"; do
     case "$1" in
         -v|--verbose ) VERBOSE=1; shift ;;
+        --timeout ) set_timeout "$2"; shift 2 ;;
         --) shift ; break ;;
         * ) check_later "$1" "$2"; shift 2 ;;
     esac
