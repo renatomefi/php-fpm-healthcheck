@@ -60,6 +60,8 @@ set_timeout() {
         >&2 printf "'--timeout' option value must be an integer, '%s' given\\n" "$1"; exit 3;
     fi
 
+    command -v timeout 1> /dev/null || { >&2 echo "Make sure timeout is installed (i.e. apk add --no-cache timeout). Aborting."; exit 4; }
+
     # if SIGTERM is used it returns 4 on busybox and conflicts with required software missing rc
     # with SIGHUP timeout returns 124 on coreutils and 129 on busybox
     TIMEOUT="timeout -s HUP $1"
