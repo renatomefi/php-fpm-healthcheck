@@ -26,7 +26,19 @@ def test_timeout_invalid_value(host):
     assert "--timeout" in cmd.stderr
     assert "option value must be an integer" in cmd.stderr
 
-# TODO test timeout command not found
+@pytest.fixture
+def fixture_timeout_delete(host):
+    path = host.run("which timeout").stdout.strip()
+    host.run("mv {0} {0}~".format(path))
+    yield 1
+    host.run("mv {0}~ {0}".format(path))
+
+@pytest.mark.php_fpm
+def test_timeout_not_found(host, fixture_timeout_delete):
+    cmd = host.run("php-fpm-healthcheck --timeout=1")
+    assert cmd.rc == 4
+    assert "Make sure timeout is installed" in cmd.stderr
+    assert "Aborting" in cmd.stderr
 
 @pytest.mark.php_fpm
 def test_timeout_sleep(host):
