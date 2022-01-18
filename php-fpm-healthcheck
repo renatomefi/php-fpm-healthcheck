@@ -23,6 +23,7 @@
 # 1 - A healthcheck condition has failed
 # 3 - Invalid option given
 # 4 - One or more required softwares are missing
+# 124,129 - Request timeout
 #
 # Available options:
 # -v|--verbose
@@ -50,12 +51,18 @@ command -v sed 1> /dev/null || { >&2 echo "Make sure sed is installed (i.e. apk 
 command -v tail 1> /dev/null || { >&2 echo "Make sure tail is installed (i.e. apk add --no-cache busybox). Aborting."; exit 4; }
 command -v grep 1> /dev/null || { >&2 echo "Make sure grep is installed (i.e. apk add --no-cache grep). Aborting."; exit 4; }
 
+TIMEOUT=""
+
 # Configures a timeout for cgi-fcgi connection
 # $1 - timeout in seconds
 set_timeout() {
     if ! test "$1" -eq "$1" 2> /dev/null; then
         >&2 printf "'--timeout' option value must be an integer, '%s' given\\n" "$1"; exit 3;
     fi
+
+    # if SIGTERM is used it returns 4 on busybox and conflicts with required software missing rc
+    # with SIGHUP timeout returns 124 on coreutils and 129 on busybox
+    TIMEOUT="timeout -s HUP $1"
 }
 
 # Get status from fastcgi connection
@@ -64,7 +71,8 @@ get_fpm_status() {
     if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s%s\\n" "$1" "$SCRIPT_NAME"; fi;
     
     # Since I cannot use pipefail I'll just split these in two commands
-    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
+    # Timeout will expand if configured and must not be quoted!
+    FPM_STATUS=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" $TIMEOUT "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
     FPM_STATUS=$(echo "$FPM_STATUS" | tail -n +5)
 
     if test "$VERBOSE" = 1; then printf "php-fpm status output:\\n%s\\n" "$FPM_STATUS"; fi;
