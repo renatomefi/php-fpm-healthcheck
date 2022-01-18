@@ -43,6 +43,7 @@ The script is POSIX sh but also uses some tools from your operating system, bein
 - sed
 - tail
 - grep
+- timeout (optional)
 
 In case you're using alpine you only need to make sure you have installed `busybox` and `fcgi` packages.
 
