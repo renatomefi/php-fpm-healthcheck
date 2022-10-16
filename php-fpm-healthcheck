@@ -73,7 +73,7 @@ check_fpm_health_by() {
     VALUE_EXPECTED="$2";
     VALUE_ACTUAL=$(echo "$FPM_STATUS" | grep "^$OPTION:" | cut -d: -f2 | sed 's/ //g')
 
-    if test "$VERBOSE" = 1; then printf "'%s' value '%s' and expected is less than '%s'\\n" "$OPTION" "$VALUE_ACTUAL" "$VALUE_EXPECTED"; fi;
+    if test "$VERBOSE" = 1; then printf "'%s' value '%s' and expected is less than or equal to '%s'\\n" "$OPTION" "$VALUE_ACTUAL" "$VALUE_EXPECTED"; fi;
 
     if test "$VALUE_ACTUAL" -gt "$VALUE_EXPECTED"; then
         >&2 printf "'%s' value '%s' is greater than expected '%s'\\n" "$OPTION" "$VALUE_ACTUAL" "$VALUE_EXPECTED";
