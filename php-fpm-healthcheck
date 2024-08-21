@@ -66,6 +66,23 @@ get_fpm_status() {
     fi;
 }
 
+get_fpm_ping() {
+    SCRIPT_NAME=/ping
+    if test "$VERBOSE" = 1; then printf "Trying to connect to php-fpm via: %s%s\\n" "$1" "$SCRIPT_NAME"; fi;
+
+    PONG=$(env -i REQUEST_METHOD="$REQUEST_METHOD" SCRIPT_NAME="$SCRIPT_NAME" SCRIPT_FILENAME="$SCRIPT_FILENAME" "$FCGI_CMD_PATH" -bind -connect "$1" 2> /dev/null)
+    PONG=$(echo "$PONG" | tail -n1)
+
+    if test "$VERBOSE" = 1; then printf "result: %s \\n" "$PONG"; fi;
+
+    if test "$PONG" = "pong"; then
+        exit 0;
+    fi;
+
+    >&2 printf "php-fpm /ping page non reachable\\n";
+    exit 1;
+}
+
 # $1 - fpm option
 # $2 - expected value threshold
 check_fpm_health_by() {
@@ -108,7 +125,7 @@ check_fpm_health() {
     done
 }
 
-if ! GETOPT=$(getopt -o v --long verbose,accepted-conn:,listen-queue:,max-listen-queue:,listen-queue-len:,idle-processes:,active-processes:,total-processes:,max-active-processes:,max-children-reached:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
+if ! GETOPT=$(getopt -o vp --long verbose,ping,accepted-conn:,listen-queue:,max-listen-queue:,listen-queue-len:,idle-processes:,active-processes:,total-processes:,max-active-processes:,max-children-reached:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
     >&2 echo "Invalid options, terminating." ; exit 3
 fi;
 
@@ -124,14 +141,27 @@ export SCRIPT_FILENAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
 FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
 
 VERBOSE=0
+PING=0
 
 while test "$1"; do
     case "$1" in
         -v|--verbose ) VERBOSE=1; shift ;;
+        -p|--ping ) PING=1; shift ;;
         --) shift ; break ;;
         * ) check_later "$1" "$2"; shift 2 ;;
     esac
 done
+
+if [ $PARAM_AMOUNT -eq 0 ]
+then
+    if test "$VERBOSE" = 1; then echo "no tests provided, defaults to ping mode"; fi;
+    PING=1
+fi
+
+if [ $PING -eq 1 ]
+then
+    get_fpm_ping "$FCGI_CONNECT"
+fi
 
 FPM_STATUS=false
 
