@@ -16,12 +16,16 @@ test: ## Test code in multiple images
 	$(MAKE) test-image IMAGE="php:7.4-fpm-alpine" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:8.0-fpm-alpine" DOCKERFILE="alpine"
 	$(MAKE) test-image IMAGE="php:8.1-fpm-alpine" DOCKERFILE="alpine"
-	$(MAKE) test-image IMAGE="php:7.1-fpm-stretch" DOCKERFILE="stretch"
-	$(MAKE) test-image IMAGE="php:7.2-fpm-stretch" DOCKERFILE="stretch"
-	$(MAKE) test-image IMAGE="php:7.3-fpm-stretch" DOCKERFILE="stretch"
-	$(MAKE) test-image IMAGE="php:7.4-fpm-buster" DOCKERFILE="buster"
-	$(MAKE) test-image IMAGE="php:8.0-fpm-buster" DOCKERFILE="buster"
-	$(MAKE) test-image IMAGE="php:8.1-fpm-buster" DOCKERFILE="buster"
+	$(MAKE) test-image IMAGE="php:8.2-fpm-alpine" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:8.3-fpm-alpine" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:8.4-fpm-alpine" DOCKERFILE="alpine"
+	$(MAKE) test-image IMAGE="php:7.3-fpm-bullseye" DOCKERFILE="bullseye"
+	$(MAKE) test-image IMAGE="php:7.4-fpm-bullseye" DOCKERFILE="bullseye"
+	$(MAKE) test-image IMAGE="php:8.0-fpm-bullseye" DOCKERFILE="bullseye"
+	$(MAKE) test-image IMAGE="php:8.1-fpm-trixie" DOCKERFILE="trixie"
+	$(MAKE) test-image IMAGE="php:8.2-fpm-trixie" DOCKERFILE="trixie"
+	$(MAKE) test-image IMAGE="php:8.3-fpm-trixie" DOCKERFILE="trixie"
+	$(MAKE) test-image IMAGE="php:8.4-fpm-trixie" DOCKERFILE="trixie"
 
 test-image:
 	./test/docker.sh ${DOCKERFILE} ${IMAGE}
