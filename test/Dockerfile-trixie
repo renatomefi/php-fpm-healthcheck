@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-stretch
+FROM php:8.1-fpm-trixie
 
 # Required software
 RUN set -x \
