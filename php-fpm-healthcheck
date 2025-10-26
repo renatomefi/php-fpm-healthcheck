@@ -27,6 +27,10 @@
 # Available options:
 # -v|--verbose
 # 
+# Connection options:
+# --fcgi-connect=host:port
+# --fcgi-status-path=path
+#
 # Metric options, fails in case the CURRENT VALUE is bigger than the GIVEN VALUE
 # --accepted-conn=n
 # --listen-queue=n
@@ -108,7 +112,7 @@ check_fpm_health() {
     done
 }
 
-if ! GETOPT=$(getopt -o v --long verbose,accepted-conn:,listen-queue:,max-listen-queue:,listen-queue-len:,idle-processes:,active-processes:,total-processes:,max-active-processes:,max-children-reached:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
+if ! GETOPT=$(getopt -o v --long verbose,fcgi-connect:,fcgi-status-path:,accepted-conn:,listen-queue:,max-listen-queue:,listen-queue-len:,idle-processes:,active-processes:,total-processes:,max-active-processes:,max-children-reached:,slow-requests: -n 'php-fpm-healthcheck' -- "$@"); then
     >&2 echo "Invalid options, terminating." ; exit 3
 fi;
 
@@ -118,16 +122,21 @@ eval set -- "$GETOPT"
 FCGI_CONNECT_DEFAULT="localhost:9000"
 FCGI_STATUS_PATH_DEFAULT="/status"
 
+FCGI_CONNECT="${FCGI_CONNECT_ARG:-${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}}"
+SCRIPT_NAME="${FCGI_STATUS_PATH_ARG:-${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}}"
+SCRIPT_FILENAME="$SCRIPT_NAME"
+
 export REQUEST_METHOD="GET"
-export SCRIPT_NAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
-export SCRIPT_FILENAME="${FCGI_STATUS_PATH:-$FCGI_STATUS_PATH_DEFAULT}"
-FCGI_CONNECT="${FCGI_CONNECT:-$FCGI_CONNECT_DEFAULT}"
+export SCRIPT_NAME
+export SCRIPT_FILENAME
 
 VERBOSE=0
 
 while test "$1"; do
     case "$1" in
         -v|--verbose ) VERBOSE=1; shift ;;
+        --fcgi-connect ) FCGI_CONNECT_ARG="$2"; shift 2 ;;
+        --fcgi-status-path ) FCGI_STATUS_PATH_ARG="$2"; shift 2 ;;
         --) shift ; break ;;
         * ) check_later "$1" "$2"; shift 2 ;;
     esac
