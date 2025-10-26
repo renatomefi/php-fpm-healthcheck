@@ -22,9 +22,9 @@ def test_valid_with_non_integer_value_exits_properly(host):
 
 @pytest.mark.php_fpm
 def test_all_available_options_at_once(host):
-    cmd = host.run("php-fpm-healthcheck --accepted-conn=1000 --listen-queue=1000 --max-listen-queue=1000 "
-                   "--listen-queue-len=1000 --idle-processes=1000 --active-processes=1000 --total-processes=1000 "
-                   "--max-active-processes=1000 --max-children-reached=1000 --slow-requests=1000")
+    cmd = host.run("php-fpm-healthcheck --accepted-conn=100000 --listen-queue=100000 --max-listen-queue=100000 "
+                   "--listen-queue-len=100000 --idle-processes=100000 --active-processes=100000 --total-processes=100000 "
+                   "--max-active-processes=100000 --max-children-reached=100000 --slow-requests=100000")
     assert cmd.rc == 0    
 
 @pytest.mark.php_fpm
@@ -44,6 +44,21 @@ def test_all_available_options(host, option):
     assert cmd.rc == 0
     assert "value" in cmd.stdout
     assert "and expected is less than '1000'" in cmd.stdout
+
+@pytest.mark.php_fpm
+def test_fcgi_connect_option(host):
+    cmd = host.run("php-fpm-healthcheck --fcgi-connect=127.0.0.1:9000")
+    assert cmd.rc == 0
+
+@pytest.mark.php_fpm
+def test_fcgi_status_path_option(host):
+    cmd = host.run("php-fpm-healthcheck --fcgi-status-path=/status")
+    assert cmd.rc == 0
+
+@pytest.mark.php_fpm
+def test_fcgi_options_combined(host):
+    cmd = host.run("php-fpm-healthcheck --fcgi-connect=localhost:9000 --fcgi-status-path=/status --accepted-conn=100000")
+    assert cmd.rc == 0
 
 @pytest.mark.alpine
 def test_missing_fcgi_apk(host):
